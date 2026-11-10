@@ -107,46 +107,62 @@ def languages(repos):
 
 
 def render(stats, theme):
-    """Build the SVG body and fill the template for one theme."""
+    """Build a terminal-style SVG body and fill the template for one theme."""
     out = []
-    y = 34
+    step = 20
+    bar_x, bar_w = 130, 250
 
-    def rule(at):
-        out.append('    <line class="rule" x1="0" y1="{0}" x2="{1}" y2="{0}"/>'.format(at, WIDTH))
+    # Title bar with square window buttons
+    for i in range(3):
+        cls = "cursor" if i == 0 else "btn"
+        out.append('    <rect class="{}" x="{}" y="10" width="9" height="9"/>'.format(cls, 16 + i * 16))
+    out.append('    <text class="strong mid" x="{}" y="19">{}@github: ~</text>'.format(WIDTH // 2, stats["login"]))
+    out.append('    <line class="rule" x1="0" y1="30" x2="{}" y2="30"/>'.format(WIDTH))
+    y = 56
+
+    def prompt(cmd):
+        nonlocal y
+        out.append('    <text x="{}" y="{}"><tspan class="accent">$</tspan> {}</text>'.format(PAD, y, cmd))
+        y += step
+
+    def heading(title):
+        nonlocal y
+        out.append('    <text class="strong" x="{}" y="{}"># {}</text>'.format(PAD, y, title))
+        y += step
 
     def row(label, value):
         nonlocal y
-        out.append('    <text class="dim" x="{}" y="{}">{}</text>'.format(PAD, y, label))
-        out.append('    <text class="end" x="{}" y="{}">{}</text>'.format(WIDTH - PAD, y, value))
-        y += ROW
+        out.append('    <text x="{}" y="{}">{}</text>'.format(PAD, y, label))
+        out.append('    <text class="strong end" x="{}" y="{}">{}</text>'.format(WIDTH - PAD, y, value))
+        y += step
 
-    out.append('    <text x="{}" y="{}">~ <tspan class="accent">$</tspan> stats</text>'.format(PAD, y))
-    y += 16
-    rule(y)
-    y += 24
-
+    prompt("stats --user " + stats["login"])
+    y += 6
+    heading("totals")
     for label, value in stats["totals"]:
         row(label, "{:,}".format(value))
-    y -= 6
-    rule(y)
-    y += 24
+    y += 8
 
-    bar_x, bar_w = 120, 270
+    heading("languages")
     for name, pct in stats["langs"]:
         out.append('    <text x="{}" y="{}">{}</text>'.format(PAD, y, name))
-        out.append('    <rect class="track" x="{}" y="{}" width="{}" height="8" rx="2"/>'.format(bar_x, y - 9, bar_w))
-        out.append('    <rect class="bar" x="{}" y="{}" width="{:.1f}" height="8" rx="2"/>'.format(
-            bar_x, y - 9, max(bar_w * pct / 100, 2)))
-        out.append('    <text class="end" x="{}" y="{}">{:.1f}%</text>'.format(WIDTH - PAD, y, pct))
-        y += ROW
-    y -= 6
-    rule(y)
-    y += 24
+        out.append('    <rect class="track" x="{}.5" y="{}.5" width="{}" height="10"/>'.format(bar_x, y - 10, bar_w))
+        out.append('    <rect class="bar" x="{}" y="{}" width="{}" height="11"/>'.format(
+            bar_x + 1, y - 10, max(round((bar_w - 1) * pct / 100), 2)))
+        out.append('    <text class="strong end" x="{}" y="{}">{:.1f}%</text>'.format(WIDTH - PAD, y, pct))
+        y += step
+    y += 8
 
+    heading("streak")
     for label, value in stats["streak"]:
         row(label, value)
+    y += 8
 
-    height = y - ROW + 20
+    # Final prompt with a block cursor
+    out.append('    <text x="{}" y="{}"><tspan class="accent">$</tspan></text>'.format(PAD, y))
+    out.append('    <rect class="cursor" x="{}" y="{}" width="8" height="15"/>'.format(PAD + 16, y - 12))
+
+    height = y + 20
     tpl = open(os.path.join(os.path.dirname(__file__), "template.svg")).read()
     values = {
         "width": WIDTH, "height": height,
@@ -156,7 +172,7 @@ def render(stats, theme):
     }
     for key, val in values.items():
         tpl = tpl.replace("{{" + key + "}}", str(val))
-    return tpl
+    return tpl.rstrip("\n")
 
 
 def main():
@@ -171,6 +187,7 @@ def main():
     col = viewer["contributionsCollection"]
     current, longest = streaks(col["contributionCalendar"])
     stats = {
+        "login": login,
         "totals": [
             ("commits (last year)", col["totalCommitContributions"] + col["restrictedContributionsCount"]),
             ("pull requests", viewer["pullRequests"]["totalCount"]),

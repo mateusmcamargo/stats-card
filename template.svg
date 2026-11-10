@@ -1,13 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="{{width}}" height="{{height}}" viewBox="0 0 {{width}} {{height}}" role="img" aria-label="GitHub stats">
     <style>
         text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; fill: {{fg}}; }
-        .accent { fill: {{accent}}; }
-        .dim { fill-opacity: 0.6; }
+        .accent { fill: {{accent}}; font-weight: bold; }
+        .strong { font-weight: bold; }
         .end { text-anchor: end; }
-        .rule { stroke: {{fg}}; stroke-opacity: 0.35; stroke-width: 1; }
-        .track { fill: {{fg}}; fill-opacity: 0.15; }
-        .bar { fill: {{accent}}; }
+        .mid { text-anchor: middle; }
+        .rule { stroke: {{fg}}; stroke-width: 1; shape-rendering: crispEdges; }
+        .btn { fill: none; stroke: {{fg}}; stroke-width: 1; shape-rendering: crispEdges; }
+        .track { fill: none; stroke: {{fg}}; stroke-width: 1; shape-rendering: crispEdges; }
+        .bar { fill: {{accent}}; shape-rendering: crispEdges; }
+        .cursor { fill: {{accent}}; shape-rendering: crispEdges; }
     </style>
-    <rect x="0.5" y="0.5" width="{{inner_w}}" height="{{inner_h}}" rx="6" fill="{{bg}}" stroke="{{fg}}" stroke-opacity="0.35"/>
+    <rect x="0.5" y="0.5" width="{{inner_w}}" height="{{inner_h}}" fill="{{bg}}" stroke="{{fg}}" stroke-width="1.5"/>
 {{body}}
 </svg>
