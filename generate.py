@@ -18,8 +18,8 @@ THEMES = {
 }
 
 QUERY = """
-query($after: String) {
-    viewer {
+query($login: String!, $after: String) {
+    user(login: $login) {
         login
         pullRequests { totalCount }
         issues { totalCount }
@@ -47,9 +47,9 @@ query($after: String) {
 """
 
 
-def gql(token, after=None):
-    """Run the GraphQL query and return the viewer object."""
-    body = json.dumps({"query": QUERY, "variables": {"after": after}}).encode()
+def gql(token, login, after=None):
+    """Run the GraphQL query and return the user object."""
+    body = json.dumps({"query": QUERY, "variables": {"login": login, "after": after}}).encode()
     req = urllib.request.Request(API, data=body, headers={
         "Authorization": "bearer " + token,
         "Content-Type": "application/json",
@@ -59,16 +59,16 @@ def gql(token, after=None):
         data = json.load(res)
     if "errors" in data:
         sys.exit("GraphQL error: " + json.dumps(data["errors"]))
-    return data["data"]["viewer"]
+    return data["data"]["user"]
 
 
-def fetch(token):
+def fetch(token, login):
     """Collect all data, paginating the repository list."""
-    viewer = gql(token)
+    viewer = gql(token, login)
     repos = list(viewer["repositories"]["nodes"])
     page = viewer["repositories"]["pageInfo"]
     while page["hasNextPage"]:
-        more = gql(token, page["endCursor"])["repositories"]
+        more = gql(token, login, page["endCursor"])["repositories"]
         repos += more["nodes"]
         page = more["pageInfo"]
     return viewer, repos
@@ -163,7 +163,11 @@ def main():
     token = os.environ.get("STATS_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:
         sys.exit("Set STATS_TOKEN or GITHUB_TOKEN")
-    viewer, repos = fetch(token)
+    # The Actions token is an app token, so query a named user instead of the viewer
+    login = os.environ.get("STATS_USER") or os.environ.get("GITHUB_REPOSITORY_OWNER")
+    if not login:
+        sys.exit("Set STATS_USER (or GITHUB_REPOSITORY_OWNER)")
+    viewer, repos = fetch(token, login)
     col = viewer["contributionsCollection"]
     current, longest = streaks(col["contributionCalendar"])
     stats = {
