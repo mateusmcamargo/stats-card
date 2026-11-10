@@ -12,11 +12,11 @@
     <text x="24" y="34">~ <tspan class="accent">$</tspan> stats</text>
     <line class="rule" x1="0" y1="50" x2="480" y2="50"/>
     <text class="dim" x="24" y="74">commits (last year)</text>
-    <text class="end" x="456" y="74">464</text>
+    <text class="end" x="456" y="74">465</text>
     <text class="dim" x="24" y="96">pull requests</text>
     <text class="end" x="456" y="96">13</text>
     <text class="dim" x="24" y="118">issues</text>
-    <text class="end" x="456" y="118">42</text>
+    <text class="end" x="456" y="118">32</text>
     <text class="dim" x="24" y="140">stars</text>
     <text class="end" x="456" y="140">5</text>
     <text class="dim" x="24" y="162">repositories</text>
@@ -44,7 +44,7 @@
     <text class="end" x="456" y="290">6.7%</text>
     <line class="rule" x1="0" y1="306" x2="480" y2="306"/>
     <text class="dim" x="24" y="330">contributions</text>
-    <text class="end" x="456" y="330">497</text>
+    <text class="end" x="456" y="330">498</text>
     <text class="dim" x="24" y="352">current streak</text>
     <text class="end" x="456" y="352">6 days</text>
     <text class="dim" x="24" y="374">longest streak</text>
