@@ -20,7 +20,7 @@
     <text x="24" y="56"><tspan class="accent">$</tspan> stats --user mateusmcamargo</text>
     <text class="strong" x="24" y="82"># totals</text>
     <text x="24" y="102">commits (last year)</text>
-    <text class="strong end" x="456" y="102">480</text>
+    <text class="strong end" x="456" y="102">492</text>
     <text x="24" y="122">pull requests</text>
     <text class="strong end" x="456" y="122">13</text>
     <text x="24" y="142">issues</text>
@@ -52,11 +52,11 @@
     <text class="strong end" x="456" y="310">6.7%</text>
     <text class="strong" x="24" y="338"># streak</text>
     <text x="24" y="358">contributions</text>
-    <text class="strong end" x="456" y="358">513</text>
+    <text class="strong end" x="456" y="358">525</text>
     <text x="24" y="378">current streak</text>
-    <text class="strong end" x="456" y="378">8 days</text>
+    <text class="strong end" x="456" y="378">10 days</text>
     <text x="24" y="398">longest streak</text>
-    <text class="strong end" x="456" y="398">8 days</text>
+    <text class="strong end" x="456" y="398">10 days</text>
     <text x="24" y="426"><tspan class="accent">$</tspan></text>
     <rect class="cursor" x="40" y="414" width="8" height="15"/>
 </svg>
